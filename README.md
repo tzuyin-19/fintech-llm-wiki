@@ -2,7 +2,9 @@
 
 這是生成式 AI 作業使用的金融科技知識庫。研究主題包括股票分析、金融 AI、數位銀行，以及金融 AI 治理與金融穩定。內容索引見 [wiki/index.md](wiki/index.md)；維護規範見 [AGENTS.md](AGENTS.md)。
 
-已完成四份圖譜教學簡報：[股票分析](presentations/stock-analysis.html)、[金融 AI](presentations/financial-ai.html)、[數位銀行](presentations/digital-banking.html)、[金融 AI 治理](presentations/ai-governance.html)。製作前的規劃見 [流程與大綱](presentations/graph-outline-draft.md)，實際 loop / graph 見 [WORKFLOW.md](WORKFLOW.md)，執行與反思見 [EXECUTION_LOG.md](EXECUTION_LOG.md)。
+已完成四份可直接瀏覽的圖譜教學簡報：[股票分析](https://tzuyin-19.github.io/fintech-llm-wiki/presentations/stock-analysis.html)、[金融 AI](https://tzuyin-19.github.io/fintech-llm-wiki/presentations/financial-ai.html)、[數位銀行](https://tzuyin-19.github.io/fintech-llm-wiki/presentations/digital-banking.html)、[金融 AI 治理](https://tzuyin-19.github.io/fintech-llm-wiki/presentations/ai-governance.html)。製作前的規劃見 [流程與大綱](presentations/graph-outline-draft.md)，實際 loop / graph 見 [WORKFLOW.md](WORKFLOW.md)，執行與反思見 [EXECUTION_LOG.md](EXECUTION_LOG.md)。
+
+作業欄位可貼上的文字見 [SUBMISSION.md](SUBMISSION.md)；可用的簡報截圖存於 [screenshots/](screenshots/)。
 
 ## 資料夾
 

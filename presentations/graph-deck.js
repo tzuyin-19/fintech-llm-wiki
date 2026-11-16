@@ -8,6 +8,14 @@
   })[char]);
   const source = id => data.sources[id];
   const refs = ids => (ids || []).map(id => source(id)).filter(Boolean);
+  function wikiHref(item) {
+    if (location.hostname.endsWith(".github.io") && item.wiki.startsWith("../wiki/")) {
+      const owner = location.hostname.split(".")[0];
+      const repo = location.pathname.split("/")[1];
+      return `https://github.com/${owner}/${repo}/blob/main/wiki/${item.wiki.slice("../wiki/".length)}`;
+    }
+    return item.wiki;
+  }
 
   function slideTop(slide, index) {
     return `<div class="slide-top"><p class="eyebrow">${esc(slide.kicker || data.topic)}</p><span class="slide-no">${String(index + 1).padStart(2, "0")} / ${String(data.slides.length).padStart(2, "0")}</span></div>`;
@@ -16,7 +24,7 @@
     return `<ul class="fact-list">${(items || []).map(item => `<li><strong>${esc(item.label)}</strong><p>${esc(item.text)}</p></li>`).join("")}</ul>`;
   }
   function foot(slide) {
-    const links = refs(slide.refs).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.short)} 原文 ↗</a><a href="${esc(item.wiki)}">Wiki 筆記 ↗</a>`).join("");
+    const links = refs(slide.refs).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.short)} 原文 ↗</a><a href="${esc(wikiHref(item))}" target="_blank" rel="noopener">Wiki 筆記 ↗</a>`).join("");
     return `${slide.note ? `<p class="caveat">${esc(slide.note)}</p>` : ""}<footer class="source-foot"><span>來源與核對</span>${links || "<span>本頁為跨來源整理；詳見文獻頁。</span>"}</footer>`;
   }
   function heading(slide) {
@@ -91,7 +99,7 @@
     return `${slideTop(slide, index)}${heading(slide)}<div class="takeaway-grid">${(slide.cards || []).map((card, i) => `<article class="takeaway-card"><span class="number">${String(i + 1).padStart(2, "0")}</span><h3>${esc(card.title)}</h3><p>${esc(card.text)}</p></article>`).join("")}</div>${foot(slide)}`;
   }
   function renderSources(slide, index) {
-    const cards = Object.values(data.sources).map(item => `<article class="source-card"><h3>${esc(item.name)}</h3><p>${esc(item.detail)}</p><div class="links"><a href="${esc(item.url)}" target="_blank" rel="noopener">原始來源 ↗</a><a href="${esc(item.wiki)}">Wiki 筆記 ↗</a></div></article>`).join("");
+    const cards = Object.values(data.sources).map(item => `<article class="source-card"><h3>${esc(item.name)}</h3><p>${esc(item.detail)}</p><div class="links"><a href="${esc(item.url)}" target="_blank" rel="noopener">原始來源 ↗</a><a href="${esc(wikiHref(item))}" target="_blank" rel="noopener">Wiki 筆記 ↗</a></div></article>`).join("");
     return `${slideTop(slide, index)}${heading(slide)}<div class="source-grid">${cards}</div>${slide.note ? `<p class="caveat">${esc(slide.note)}</p>` : ""}`;
   }
   const renderers = {cover:renderCover, map:renderMap, focus:renderFocus, chart:renderChart, matrix:renderMatrix, summary:renderSummary, sources:renderSources};
