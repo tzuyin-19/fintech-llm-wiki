@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11131d">
+  <title>數位銀行｜從服務可近性到客戶採用</title>
+  <style>
+    :root {
+      --ink: #f5f0e9;
+      --muted: #b7b1c0;
+      --dim: #858094;
+      --night: #11131d;
+      --panel: #1b1d2b;
+      --panel-2: #222435;
+      --line: rgba(245, 240, 233, .13);
+      --coral: #ff8278;
+      --lilac: #b5a2e3;
+      --mint: #8cdbb2;
+      --gold: #f2c56f;
+      --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #0b0c12; color: var(--ink); font-family: var(--sans); }
+    body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 22px 18px 76px; }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    .deck { position: relative; width: min(1390px, calc((100vh - 112px) * 16 / 9), calc(100vw - 36px)); height: min(78vh, 782px); min-height: 570px; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-radius: 22px; background: var(--night); box-shadow: 0 32px 90px rgba(0,0,0,.48); }
+    .slide { display: none; position: absolute; inset: 0; padding: clamp(32px, 4.2vw, 68px); overflow: hidden; background: var(--night); }
+    .slide.active { display: flex; flex-direction: column; animation: enter .34s ease both; }
+    @keyframes enter { from { opacity: .5; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .slide::before { content: ""; position: absolute; width: 420px; height: 420px; border-radius: 50%; right: -190px; top: -230px; background: radial-gradient(circle, rgba(181,162,227,.16), transparent 67%); pointer-events: none; }
+    .slide > * { position: relative; z-index: 1; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; color: var(--mint); text-transform: uppercase; letter-spacing: .16em; font-size: 12px; font-weight: 800; }
+    .eyebrow::before { content: ""; width: 24px; height: 2px; background: currentColor; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 780px; margin-bottom: 18px; font-size: clamp(46px, 6vw, 88px); line-height: 1.02; letter-spacing: -.055em; }
+    h2 { max-width: 950px; margin: 0 0 14px; font-size: clamp(34px, 4vw, 58px); line-height: 1.08; letter-spacing: -.04em; }
+    h3 { margin-bottom: 9px; font-size: clamp(19px, 1.8vw, 25px); line-height: 1.2; }
+    p { color: var(--muted); line-height: 1.62; }
+    .lead { max-width: 760px; color: #d5cfda; font-size: clamp(18px, 2vw, 25px); line-height: 1.5; }
+    .subtitle { max-width: 600px; margin-bottom: 0; color: var(--muted); font-size: clamp(18px, 1.8vw, 24px); line-height: 1.55; }
+    .small { color: var(--dim); font-size: 13px; line-height: 1.5; }
+    .tiny { color: var(--dim); font-size: 11px; line-height: 1.45; }
+    .accent { color: var(--coral); }
+    .mint { color: var(--mint); }
+    .gold { color: var(--gold); }
+    .lilac { color: var(--lilac); }
+    .rule { width: 100%; height: 1px; margin: 20px 0; background: var(--line); }
+    .topline { display: flex; justify-content: space-between; align-items: center; margin-bottom: auto; }
+    .section-tag { color: var(--dim); font-size: 12px; letter-spacing: .08em; }
+    .cover { background: radial-gradient(circle at 78% 46%, rgba(255,130,120,.13), transparent 28%), linear-gradient(140deg, #11131d 35%, #1b1b2a 100%); }
+    .cover-grid { display: grid; grid-template-columns: 1.25fr .75fr; align-items: center; gap: 28px; flex: 1; }
+    .cover h1 span { color: var(--coral); }
+    .cover-art { display: grid; place-items: center; position: relative; min-height: 340px; }
+    .cover-art .halo { position: absolute; width: 310px; height: 310px; border: 1px solid rgba(181,162,227,.3); border-radius: 50%; box-shadow: 0 0 0 35px rgba(181,162,227,.035), 0 0 0 70px rgba(181,162,227,.025); }
+    .cover-art img { width: min(80%, 330px); filter: drop-shadow(0 24px 25px rgba(0,0,0,.28)); }
+    .cover-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+    .pill { display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; color: #ded8e2; background: rgba(255,255,255,.035); font-size: 12px; }
+    .pill b { color: var(--mint); font-weight: 700; }
+    .cover-footer { display: flex; justify-content: space-between; align-items: end; margin-top: 16px; }
+    .cover-footer .small { margin: 0; }
+    .statement-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(28px, 5vw, 70px); align-items: center; flex: 1; }
+    .big-quote { border-left: 3px solid var(--coral); padding-left: 22px; color: var(--ink); font-size: clamp(24px, 3vw, 40px); line-height: 1.35; letter-spacing: -.025em; }
+    .big-quote strong { color: var(--mint); font-weight: 700; }
+    .scope-cards { display: grid; gap: 12px; }
+    .scope-card { display: grid; grid-template-columns: 42px 1fr; align-items: center; gap: 14px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.035); }
+    .scope-card .num { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--night); background: var(--lilac); font-size: 14px; font-weight: 900; }
+    .scope-card:nth-child(2) .num { background: var(--coral); }
+    .scope-card:nth-child(3) .num { background: var(--mint); }
+    .scope-card p { margin: 0; font-size: 14px; }
+    .study-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px; margin-top: 18px; flex: 1; }
+    .study { display: flex; flex-direction: column; padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.018)); }
+    .study-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 9px; }
+    .study-year { color: var(--gold); font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+    .study h3 { margin: 0; font-size: 19px; }
+    .study p { margin: 0 0 12px; font-size: 13px; }
+    .method { margin-top: auto; color: #c5bfd0; font-size: 11px; }
+    .method span { color: var(--mint); }
+    .source-link { display: inline-flex; align-items: center; gap: 5px; color: var(--lilac); text-decoration: none; font-size: 11px; }
+    .source-link:hover, .cite:hover { text-decoration: underline; }
+    .journey { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin: 46px 0 30px; }
+    .step { position: relative; padding: 0 17px; }
+    .step:first-child { padding-left: 0; }
+    .step:not(:last-child)::after { content: ""; position: absolute; top: 28px; left: 64px; right: -3px; border-top: 1px dashed rgba(245,240,233,.3); }
+    .step-no { position: relative; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 19px; border-radius: 18px; color: var(--night); background: var(--coral); font-size: 18px; font-weight: 900; }
+    .step:nth-child(2) .step-no { background: var(--gold); }
+    .step:nth-child(3) .step-no { background: var(--lilac); }
+    .step:nth-child(4) .step-no { background: var(--mint); }
+    .step h3 { font-size: 19px; }
+    .step p { max-width: 230px; font-size: 13px; }
+    .journey-note { display: flex; align-items: center; gap: 17px; margin-top: auto; padding: 15px 19px; border-radius: 14px; background: rgba(140,219,178,.08); border: 1px solid rgba(140,219,178,.2); }
+    .journey-note img { width: 64px; height: 64px; object-fit: contain; }
+    .journey-note p { margin: 0; font-size: 14px; }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; flex: 1; }
+    .compare-card { position: relative; display: flex; flex-direction: column; padding: 25px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); overflow: hidden; }
+    .compare-card::after { content: ""; position: absolute; width: 180px; height: 180px; border-radius: 50%; right: -90px; bottom: -100px; background: rgba(255,130,120,.1); }
+    .compare-card.secondary::after { background: rgba(181,162,227,.12); }
+    .compare-card .label { margin-bottom: 12px; color: var(--mint); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+    .compare-card.secondary .label { color: var(--lilac); }
+    .compare-card h3 { max-width: 460px; font-size: clamp(22px, 2.4vw, 32px); }
+    .metric { margin: 10px 0 4px; color: var(--coral); font-size: clamp(42px, 5vw, 68px); line-height: 1; font-weight: 900; letter-spacing: -.06em; }
+    .compare-card.secondary .metric { color: var(--lilac); }
+    .compare-card p { max-width: 510px; font-size: 14px; }
+    .compare-card .source-link { margin-top: auto; }
+    .caution-strip { display: flex; gap: 11px; align-items: center; margin-top: 15px; color: #d6cfd9; font-size: 12px; }
+    .caution-strip b { color: var(--gold); }
+    .factor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px; margin-top: 23px; flex: 1; }
+    .factor { display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; padding: 19px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.035); }
+    .factor-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: var(--night); background: var(--mint); font-size: 18px; font-weight: 900; }
+    .factor:nth-child(2) .factor-icon { background: var(--coral); }
+    .factor:nth-child(3) .factor-icon { background: var(--lilac); }
+    .factor:nth-child(4) .factor-icon { background: var(--gold); }
+    .factor h3 { margin: 2px 0 7px; }
+    .factor p { margin: 0; font-size: 13px; }
+    .limit-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 28px 0 18px; }
+    .limit { min-height: 190px; padding: 17px; border-top: 2px solid var(--coral); background: rgba(255,255,255,.035); }
+    .limit:nth-child(2) { border-color: var(--gold); }
+    .limit:nth-child(3) { border-color: var(--lilac); }
+    .limit:nth-child(4) { border-color: var(--mint); }
+    .limit .index { color: var(--dim); font-size: 12px; font-weight: 800; }
+    .limit h3 { margin: 15px 0 8px; font-size: 17px; }
+    .limit p { margin: 0; font-size: 12px; }
+    .warning { margin-top: auto; padding: 13px 16px; border-radius: 12px; color: #ead8c7; background: rgba(242,197,111,.09); border: 1px solid rgba(242,197,111,.18); font-size: 12px; }
+    .implication-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: center; flex: 1; }
+    .implication-list { display: grid; gap: 10px; }
+    .implication { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding: 13px 15px; border-bottom: 1px solid var(--line); }
+    .implication .bullet { color: var(--coral); font-size: 21px; font-weight: 900; }
+    .implication p { margin: 0; color: #d8d2db; font-size: 14px; }
+    .implication strong { color: var(--ink); }
+    .implication-art { display: grid; place-items: center; min-height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(181,162,227,.13), transparent 68%); }
+    .implication-art img { width: 82%; max-width: 250px; filter: drop-shadow(0 22px 20px rgba(0,0,0,.22)); }
+    .inference-label { display: inline-flex; align-self: flex-start; margin-top: 13px; padding: 6px 10px; border: 1px solid rgba(242,197,111,.35); border-radius: 999px; color: var(--gold); font-size: 11px; }
+    .source-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 11px; margin-top: 19px; flex: 1; }
+    .reference { display: flex; flex-direction: column; padding: 15px 17px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.035); }
+    .reference h3 { margin: 0 0 6px; font-size: 16px; }
+    .reference p { margin: 0 0 11px; font-size: 11px; }
+    .reference-links { display: flex; gap: 13px; flex-wrap: wrap; margin-top: auto; }
+    .reference-links a { color: var(--lilac); font-size: 11px; text-decoration: none; }
+    .reference-links a.local { color: var(--mint); }
+    .takeaway { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: end; margin-top: 22px; padding-top: 15px; border-top: 1px solid var(--line); }
+    .takeaway p { max-width: 800px; margin: 0; color: var(--ink); font-size: 18px; }
+    .takeaway img { width: 64px; height: 64px; object-fit: contain; }
+    .cite { color: var(--mint); text-decoration: none; white-space: nowrap; font-size: 11px; }
+    .slide-no { position: absolute; right: 30px; top: 30px; color: rgba(245,240,233,.36); font-size: 11px; letter-spacing: .12em; }
+    .controls { position: fixed; bottom: 20px; left: 50%; display: flex; align-items: center; gap: 9px; transform: translateX(-50%); padding: 7px; border: 1px solid rgba(255,255,255,.13); border-radius: 999px; background: rgba(25,26,38,.92); box-shadow: 0 12px 35px rgba(0,0,0,.36); backdrop-filter: blur(14px); z-index: 20; }
+    .controls button { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; color: var(--ink); background: transparent; cursor: pointer; font-size: 18px; }
+    .controls button:hover { background: rgba(255,255,255,.1); }
+    .controls button:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+    .counter { min-width: 70px; color: #e9e3ed; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,.08); z-index: 30; }
+    .progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg,var(--coral),var(--lilac),var(--mint)); transition: width .3s ease; }
+    .keyboard-hint { position: fixed; right: 21px; bottom: 25px; color: #777487; font-size: 11px; }
+    @media (max-width: 900px) {
+      body { justify-content: flex-start; padding-top: 12px; }
+      .deck { width: calc(100vw - 24px); height: calc(100vh - 100px); min-height: 640px; aspect-ratio: auto; border-radius: 16px; }
+      .slide { overflow-y: auto; padding: 30px 25px 34px; }
+      .cover-grid, .statement-grid, .implication-layout { grid-template-columns: 1fr; }
+      .cover-art { position: absolute; right: 0; bottom: 30px; width: 39%; min-height: 160px; opacity: .55; }
+      .cover-art .halo { width: 150px; height: 150px; box-shadow: 0 0 0 20px rgba(181,162,227,.035); }
+      .cover-art img { width: 85%; }
+      .cover .cover-grid > div:first-child { position: relative; z-index: 2; }
+      .study-grid, .factor-grid, .source-grid { grid-template-columns: 1fr; }
+      .journey { grid-template-columns: 1fr 1fr; row-gap: 24px; margin: 28px 0; }
+      .step:nth-child(2)::after { display: none; }
+      .limit-grid { grid-template-columns: 1fr 1fr; }
+      .limit { min-height: 150px; }
+      .implication-art { display: none; }
+      .keyboard-hint { display: none; }
+      .slide-no { right: 20px; top: 20px; }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size: 50px; }
+      h2 { font-size: 34px; }
+      .compare { grid-template-columns: 1fr; }
+      .compare-card { min-height: 260px; }
+      .journey { grid-template-columns: 1fr; }
+      .step { padding: 0; display: grid; grid-template-columns: 50px 1fr; column-gap: 14px; }
+      .step-no { grid-row: span 2; width: 45px; height: 45px; margin: 0; border-radius: 14px; }
+      .step:not(:last-child)::after { display: none; }
+      .step h3 { margin: 2px 0 4px; }
+      .step p { margin: 0; }
+      .limit-grid { grid-template-columns: 1fr; }
+      .limit { min-height: auto; }
+      .controls { bottom: 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    @media print {
+      @page { size: 13.333in 7.5in; margin: 0; }
+      html, body { display: block; width: 100%; min-height: 0; padding: 0; background: #fff; }
+      .deck { width: 100%; height: auto; max-height: none; min-height: 0; aspect-ratio: auto; overflow: visible; border: 0; border-radius: 0; box-shadow: none; }
+      .slide, .slide.active { position: relative; display: flex !important; width: 100%; height: 100vh; min-height: 0; page-break-after: always; break-after: page; border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .controls, .progress, .keyboard-hint { display: none !important; }
+    }
+  </style>
+  <style id="pastel-vector-theme">
+    :root {
+      --ink: #403149;
+      --muted: #6e6377;
+      --dim: #85798d;
+      --night: #fff9f3;
+      --panel: #fffdf9;
+      --panel-2: #f8f1fb;
+      --line: rgba(64, 49, 73, .3);
+      --coral: #e9818c;
+      --lilac: #c1adeb;
+      --mint: #a8dec5;
+      --gold: #f1d17b;
+      --sky: #b7dcec;
+    }
+    html, body { color: var(--ink); background: #f4eaf2; }
+    body {
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255, 205, 211, .7), transparent 25%),
+        radial-gradient(circle at 89% 83%, rgba(190, 228, 211, .72), transparent 25%),
+        linear-gradient(135deg, #f8eef4, #eff5f3 55%, #f5eefb);
+    }
+    .deck {
+      border: 2px solid var(--ink);
+      border-radius: 28px;
+      background: linear-gradient(145deg, #fffdf9 0%, #fff9f5 46%, #f7f1fb 100%);
+      box-shadow: 0 8px 0 rgba(64,49,73,.18), 0 28px 70px rgba(83,62,92,.2), inset 0 2px 0 rgba(255,255,255,.95);
+    }
+    .slide { background: linear-gradient(145deg, #fffdf9, #fff8f4 63%, #f9f3fb); }
+    .slide::before {
+      background: radial-gradient(circle, rgba(193,173,235,.32), rgba(193,173,235,0) 69%);
+    }
+    .slide::after {
+      content: "";
+      position: absolute;
+      left: -160px;
+      bottom: -210px;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,222,197,.28), rgba(168,222,197,0) 68%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .cover {
+      background:
+        radial-gradient(circle at 80% 44%, rgba(255,183,186,.5), transparent 26%),
+        radial-gradient(circle at 72% 75%, rgba(193,173,235,.3), transparent 25%),
+        linear-gradient(135deg, #fffdf8 0%, #fff4ef 52%, #f4eefb 100%);
+    }
+    .cover h1 span { color: #ca6573; }
+    .cover-art .halo {
+      border: 2px solid rgba(64,49,73,.25);
+      background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,240,236,.25) 66%, transparent 67%);
+      box-shadow: 0 0 0 28px rgba(193,173,235,.12), 0 0 0 56px rgba(168,222,197,.1);
+    }
+    .cover-art img, .journey-note img, .implication-art img, .takeaway img {
+      filter: drop-shadow(0 10px 0 rgba(64,49,73,.1)) drop-shadow(0 16px 18px rgba(83,62,92,.12));
+    }
+    .eyebrow { color: #54826e; }
+    .small { color: #756a7e; }
+    .tiny, .section-tag { color: #877b8d; }
+    p { color: var(--muted); }
+    .lead { color: #5e5369; }
+    .big-quote { color: var(--ink); }
+    .big-quote strong { color: #3f8068; }
+    .pill {
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      background: linear-gradient(180deg, #fffefa, #fff3ee);
+      box-shadow: 0 3px 0 rgba(64,49,73,.12), inset 0 2px 0 rgba(255,255,255,.95);
+    }
+    .pill b { color: #438167; }
+    .scope-card, .study, .factor, .reference, .compare-card {
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      box-shadow: 0 4px 0 rgba(64,49,73,.13), inset 0 2px 0 rgba(255,255,255,.9);
+    }
+    .scope-card, .study, .factor, .reference {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(255,250,247,.95));
+    }
+    .scope-card::before, .study::before, .factor::before, .reference::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 14px;
+      right: 14px;
+      height: 17px;
+      border-radius: 0 0 18px 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .scope-card > *, .study > *, .factor > *, .reference > * { position: relative; z-index: 1; }
+    .scope-card p, .study p, .factor p, .reference p { color: var(--muted); }
+    .scope-card .num, .step-no, .factor-icon {
+      border: 2px solid var(--ink);
+      box-shadow: 0 3px 0 rgba(64,49,73,.16), inset 0 2px 0 rgba(255,255,255,.5);
+      color: var(--ink);
+    }
+    .study-year { color: #87651d; }
+    .method { color: #6e6377; }
+    .method span { color: #438167; }
+    .source-link, .reference-links a { color: #6d4e9b; font-weight: 700; }
+    .reference-links a.local { color: #39775f; }
+    .step:not(:last-child)::after { border-color: rgba(64,49,73,.4); }
+    .journey-note {
+      border: 2px solid var(--ink);
+      background: linear-gradient(110deg, #e8f6ee, #f5f0fb);
+      box-shadow: 0 4px 0 rgba(64,49,73,.11), inset 0 2px 0 rgba(255,255,255,.9);
+    }
+    .journey-note p { color: #5a5064; }
+    .mint { color: #39775f; }
+    .accent { color: #bd5968; }
+    .gold { color: #856314; }
+    .lilac { color: #6d4e9b; }
+    .compare-card {
+      background: linear-gradient(145deg, #fff5f1, #ffebe7);
+    }
+    .compare-card.secondary { background: linear-gradient(145deg, #f6f0ff, #eee8fc); }
+    .compare-card::after { background: rgba(233,129,140,.2); }
+    .compare-card.secondary::after { background: rgba(193,173,235,.24); }
+    .compare-card .label { color: #39775f; }
+    .compare-card.secondary .label { color: #6d4e9b; }
+    .compare-card .metric { color: #bd5968; }
+    .compare-card.secondary .metric { color: #6d4e9b; }
+    .compare-card p { color: #665b70; }
+    .caution-strip { color: #665b70; }
+    .caution-strip b { color: #856314; }
+    .factor { background: linear-gradient(145deg, #fffefb, #f8f2fb); }
+    .factor-icon:nth-child(1) { color: var(--ink); }
+    .limit {
+      border: 2px solid var(--ink);
+      border-top-width: 6px;
+      border-radius: 15px;
+      background: linear-gradient(150deg, #fffefa, #fbf5f9);
+      box-shadow: 0 4px 0 rgba(64,49,73,.13), inset 0 2px 0 rgba(255,255,255,.95);
+    }
+    .limit .index { color: #71657a; }
+    .limit h3 { color: var(--ink); }
+    .limit p { color: var(--muted); }
+    .warning {
+      color: #6a5421;
+      background: linear-gradient(100deg, #fff4d9, #fff9e9);
+      border: 2px solid var(--ink);
+      box-shadow: 0 3px 0 rgba(64,49,73,.1), inset 0 2px 0 rgba(255,255,255,.9);
+    }
+    .implication { border-color: rgba(64,49,73,.2); }
+    .implication p { color: #5e5369; }
+    .implication strong { color: var(--ink); }
+    .implication .bullet { color: #bd5968; }
+    .inference-label {
+      color: #856314;
+      border: 2px solid var(--ink);
+      background: linear-gradient(100deg, #fff4d9, #fffdf2);
+      box-shadow: 0 3px 0 rgba(64,49,73,.1);
+    }
+    .takeaway { border-color: rgba(64,49,73,.25); }
+    .takeaway p { color: var(--ink); }
+    .cite { color: #39775f; font-weight: 800; }
+    .slide-no { color: rgba(64,49,73,.48); font-weight: 800; }
+    .controls {
+      border: 2px solid var(--ink);
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,242,248,.98));
+      box-shadow: 0 5px 0 rgba(64,49,73,.15), 0 12px 32px rgba(83,62,92,.18), inset 0 2px 0 #fff;
+    }
+    .controls button { color: var(--ink); font-weight: 900; }
+    .controls button:hover { background: #efe6f8; }
+    .counter { color: #51445d; font-weight: 800; }
+    .progress { background: rgba(64,49,73,.12); }
+    .progress span { background: linear-gradient(90deg, #e9818c, #c1adeb, #75b997); }
+    .keyboard-hint { color: #73687d; }
+    @media (max-width: 900px) {
+      .deck { border-radius: 20px; }
+      .cover-art .halo { border-width: 1px; }
+    }
+    @media print {
+      html, body { background: #fff; }
+      .deck { box-shadow: none; }
+    }
+  </style>
+  <style id="type-and-content-refinement">
+    /* 簡報文字維持五級：封面、頁標題、卡片標題、正文、來源註記。 */
+    h1 { font-size: clamp(48px, 5vw, 68px); line-height: 1.12; letter-spacing: -.035em; }
+    h2 { font-size: clamp(32px, 3.1vw, 43px); line-height: 1.2; letter-spacing: -.025em; }
+    h3, .study h3, .step h3, .factor h3, .limit h3, .reference h3 { font-size: clamp(18px, 1.55vw, 21px); line-height: 1.32; }
+    .eyebrow, .section-tag, .study-year, .compare-card .label, .limit .index { font-size: 14px; letter-spacing: .04em; }
+    .subtitle, .lead { font-size: clamp(18px, 1.7vw, 21px); }
+    .big-quote { font-size: clamp(22px, 2.2vw, 29px); line-height: 1.46; }
+    .scope-card p, .study p, .step p, .journey-note p, .compare-card p, .factor p, .limit p, .implication p, .reference p { font-size: 16px; line-height: 1.5; }
+    .small, .tiny, .method, .source-link, .reference-links a, .cite, .caution-strip, .warning, .inference-label { font-size: 13px; line-height: 1.5; }
+    .pill, .counter, .slide-no { font-size: 14px; }
+    .takeaway p { font-size: 17px; line-height: 1.5; }
+    .compare-card h3 { font-size: clamp(20px, 1.8vw, 24px); }
+    .metric { font-size: clamp(27px, 3vw, 39px); line-height: 1.15; letter-spacing: -.025em; }
+    .study-grid { margin-top: 13px; }
+    .study { padding: 15px 19px; }
+    .study p { margin-bottom: 8px; }
+    .study-head { margin-bottom: 6px; }
+    .method { margin-top: auto; }
+    .source-link { margin-top: 5px; }
+    .journey { margin: 28px 0 20px; }
+    .step-no { margin-bottom: 13px; }
+    .factor-grid { margin-top: 14px; }
+    .factor { padding: 15px; }
+    .limit-grid { margin: 17px 0 13px; }
+    .limit { min-height: 185px; padding: 15px; }
+    .limit h3 { margin: 10px 0 7px; }
+    .source-grid { margin-top: 13px; }
+    .reference { padding: 13px 16px; }
+    .reference p { margin-bottom: 6px; }
+    .reference-links { gap: 10px; }
+    .takeaway { margin-top: 12px; }
+    @media (max-width: 900px) {
+      h1 { font-size: clamp(42px, 7vw, 62px); }
+      h2 { font-size: clamp(30px, 5vw, 40px); }
+      .slide { overflow-y: auto; }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size: 43px; }
+      h2 { font-size: 31px; }
+      .cover-art { opacity: .25; }
+      .scope-card p, .study p, .step p, .journey-note p, .compare-card p, .factor p, .limit p, .implication p, .reference p { font-size: 15px; }
+      .small, .tiny, .method, .source-link, .reference-links a, .cite, .caution-strip, .warning, .inference-label { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <main class="deck" id="deck" aria-label="數位銀行簡報">
+    <section class="slide cover active" aria-label="封面">
+      <span class="slide-no">01 / 09</span>
+      <div class="cover-grid">
+        <div>
+          <p class="eyebrow">金融科技研究簡報</p>
+          <h1>數位銀行<span>，</span><br>如何被採用？</h1>
+          <p class="subtitle">比較新加坡、西班牙、巴基斯坦與越南研究：客戶何時開始使用，又為何持續使用數位銀行服務？</p>
+          <div class="cover-meta">
+            <span class="pill"><b>01</b> 實體通路變動</span>
+            <span class="pill"><b>02</b> 使用順序</span>
+            <span class="pill"><b>03</b> 客群差異</span>
+          </div>
+        </div>
+        <div class="cover-art" aria-hidden="true">
+          <div class="halo"></div>
+          <img src="../assets/05_bank.png" alt="">
+        </div>
+      </div>
+      <div class="cover-footer">
+        <p class="small">金融科技 LLM Wiki｜研究整理：2026-11-16</p>
+        <p class="small">方向鍵或空白鍵開始 →</p>
+      </div>
+    </section>
+
+    <section class="slide" aria-label="研究範圍">
+      <span class="slide-no">02 / 09</span>
+      <p class="eyebrow">研究範圍</p>
+      <div class="statement-grid">
+        <div>
+          <h2>這裡的「採用」<br>指<span class="accent">實際使用服務</span>。</h2>
+          <p class="big-quote">從線上查餘額，到轉帳、繳費與自動付款；研究測量的是<strong>使用行為或接受度</strong>，各篇口徑不同。</p>
+          <p class="small" style="margin-top:16px">研究對象包含傳統銀行的數位通路與數位銀行服務；以下逐頁標明市場、樣本與方法。</p>
+        </div>
+        <div class="scope-cards">
+          <div class="scope-card"><span class="num">A</span><p><b>通路變動</b><br>新加坡 DBS 客戶遇到 ATM 關閉後，數位交易如何改變？</p></div>
+          <div class="scope-card"><span class="num">B</span><p><b>使用順序</b><br>西班牙 3,005 位消費者先用哪些線上服務？</p></div>
+          <div class="scope-card"><span class="num">C</span><p><b>採用條件</b><br>巴基斯坦非使用者與越南既有使用者，各受哪些因素影響？</p></div>
+        </div>
+      </div>
+      <p class="tiny">四篇研究的應變項不同：實際交易、服務使用範圍、採用意願與服務接受度，不能視為同一個指標。</p>
+    </section>
+
+    <section class="slide" aria-label="四篇研究">
+      <span class="slide-no">03 / 09</span>
+      <p class="eyebrow">證據地圖</p>
+      <h2>四個市場，四種證據。</h2>
+      <div class="study-grid">
+        <article class="study">
+          <div class="study-head"><h3>新加坡｜ATM 關閉</h3><span class="study-year">Choi、Loh</span></div>
+          <p>DBS 客戶 2015–2017 年資料；受影響客戶的數位交易與電子支付使用增加。</p>
+          <div class="method"><span>方法</span> ATM 關閉事件｜銀行交易紀錄</div>
+          <a class="source-link" href="../wiki/papers/ChoiLoh2023-PhysicalFrictionsDigitalBanking.md">Wiki 精讀：Choi、Loh ↗</a>
+        </article>
+        <article class="study">
+          <div class="study-head"><h3>西班牙｜服務使用順序</h3><span class="study-year">2020</span></div>
+          <p>3,005 位消費者調查；線上查餘額等資訊服務，通常先於轉帳等交易服務。</p>
+          <div class="method"><span>方法</span> 消費者調查｜隨機森林、因果森林</div>
+          <a class="source-link" href="../wiki/papers/CarboValverde2020-DigitalizationBankCustomers.md">Wiki 精讀：Carbo-Valverde 等 ↗</a>
+        </article>
+        <article class="study">
+          <div class="study-head"><h3>巴基斯坦｜非使用者</h3><span class="study-year">2023</span></div>
+          <p>卡拉奇 208 位伊斯蘭銀行客戶；技術自我效能等因素與採用意願相關。</p>
+          <div class="method"><span>方法</span> 非使用者問卷｜創新擴散理論</div>
+          <a class="source-link" href="../wiki/papers/Shaikh2023-IslamicDigitalBankingAdoption.md">Wiki 精讀：Shaikh 等 ↗</a>
+        </article>
+        <article class="study">
+          <div class="study-head"><h3>越南｜既有使用者</h3><span class="study-year">2024</span></div>
+          <p>疫情期間 779 位數位銀行使用者；感染風險感受與接受度關聯最強。</p>
+          <div class="method"><span>方法</span> 便利樣本問卷｜結構方程模型</div>
+          <a class="source-link" href="../wiki/papers/Nguyen2024-DigitalBankAcceptanceVietnam.md">Wiki 精讀：Nguyen 等 ↗</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" aria-label="採用路徑">
+      <span class="slide-no">04 / 09</span>
+      <p class="eyebrow">西班牙｜3,005 位消費者調查</p>
+      <h2>線上使用從<span class="mint">查詢</span>走向交易。</h2>
+      <div class="journey">
+        <div class="step"><span class="step-no">01</span><h3>知道能做什麼</h3><p>對線上服務種類的認知，是研究分析的採用條件。</p></div>
+        <div class="step"><span class="step-no">02</span><h3>先查帳戶</h3><p>查餘額、讀取銀行訊息，屬於資訊型服務。</p></div>
+        <div class="step"><span class="step-no">03</span><h3>再做交易</h3><p>轉帳、付款等操作通常在資訊查詢之後出現。</p></div>
+        <div class="step"><span class="step-no">04</span><h3>擴大使用</h3><p>安全感與服務認知，和使用服務種類較多有關。</p></div>
+      </div>
+      <div class="journey-note">
+        <img src="../assets/01_growth_chart.png" alt="向上延伸的階梯圖示">
+        <p><b class="mint">原文數字：</b>線上銀行使用者中，68.72% 查餘額，51.13% 付款或轉帳。比例的分母是線上使用者，不能讀成全體消費者採用率。<a class="cite" href="https://doi.org/10.1371/journal.pone.0240362" target="_blank" rel="noopener">論文原文 ↗</a></p>
+      </div>
+    </section>
+
+    <section class="slide" aria-label="服務可近性比較">
+      <span class="slide-no">05 / 09</span>
+      <p class="eyebrow">實體通路變動｜不同研究設計</p>
+      <h2>ATM 與分行關閉，<br>觀察到<span class="accent">不同結果</span>。</h2>
+      <div class="compare">
+        <article class="compare-card">
+          <span class="label">新加坡 DBS｜2015–2017</span>
+          <h3>ATM 關閉後，受影響客戶增加數位交易。</h3>
+          <div class="metric">約 +100 公尺</div>
+          <p>受影響客戶的 ATM 使用距離平均增加約 100 公尺；數位平台、電子轉帳、自動付款使用上升。此數字是距離變化，並非交易增幅。</p>
+          <a class="source-link" href="../wiki/papers/ChoiLoh2023-PhysicalFrictionsDigitalBanking.md">Choi、Loh 來源筆記 ↗</a>
+        </article>
+        <article class="compare-card secondary">
+          <span class="label">西班牙｜消費者問卷</span>
+          <h3>分行關閉對數位化的估計影響有限。</h3>
+          <div class="metric">3,005 人</div>
+          <p>Carbo-Valverde 等人同時分析服務認知、安全感與分行關閉；其資料顯示前兩者和線上服務使用範圍有關。</p>
+          <a class="source-link" href="../wiki/papers/CarboValverde2020-DigitalizationBankCustomers.md">Carbo-Valverde 等來源筆記 ↗</a>
+        </article>
+      </div>
+      <div class="caution-strip"><b>比較條件</b><span>國家、設施類型、資料與研究方法均不同；這兩個結果不能用來推定「關 ATM 比關分行有效」。</span></div>
+    </section>
+
+    <section class="slide" aria-label="兩種客群的採用因素">
+      <span class="slide-no">06 / 09</span>
+      <p class="eyebrow">巴基斯坦與越南｜兩種問卷樣本</p>
+      <h2>受訪者不同，<span class="accent">關鍵因素</span>也不同。</h2>
+      <div class="factor-grid">
+        <article class="factor"><span class="factor-icon">巴</span><div><h3>208 位非使用者｜卡拉奇</h3><p>相對優勢、相容性、複雜度與技術自我效能，均與數位服務採用意願有關。</p></div></article>
+        <article class="factor"><span class="factor-icon">能</span><div><h3>「我能操作」很重要</h3><p>Shaikh 等人特別指出技術自我效能的作用；研究測量的是問卷意願，不是後續真實交易。</p></div></article>
+        <article class="factor"><span class="factor-icon">越</span><div><h3>779 位既有使用者｜越南</h3><p>疫情期間，感染風險感受與數位服務接受度的關聯最大：標準化係數 β＝0.291。</p></div></article>
+        <article class="factor"><span class="factor-icon">易</span><div><h3>易用性也有關聯</h3><p>越南模型中，努力期望 β＝0.228，績效期望 β＝0.181，信任 β＝0.164；均為模型估計值。</p></div></article>
+      </div>
+      <p class="tiny">越南研究的「風險」指 COVID-19 感染風險；兩篇均為問卷分析，係數不可跨研究直接比較。<a class="cite" href="../wiki/papers/Shaikh2023-IslamicDigitalBankingAdoption.md">巴基斯坦來源 ↗</a>　<a class="cite" href="../wiki/papers/Nguyen2024-DigitalBankAcceptanceVietnam.md">越南來源 ↗</a></p>
+    </section>
+
+    <section class="slide" aria-label="研究限制">
+      <span class="slide-no">07 / 09</span>
+      <p class="eyebrow">四篇研究的適用範圍</p>
+      <h2>套用結論前，先對照<span class="gold">研究條件</span>。</h2>
+      <div class="limit-grid">
+        <article class="limit"><span class="index">01 / 新加坡</span><h3>單一銀行事件</h3><p>DBS 的 ATM 關閉與交易紀錄，可估計該事件下的通路替代；市場支付習慣可能影響外推。</p></article>
+        <article class="limit"><span class="index">02 / 西班牙</span><h3>調查中的順序</h3><p>3,005 人資料呈現資訊型到交易型服務的順序；並非追蹤每位客戶的完整生命週期。</p></article>
+        <article class="limit"><span class="index">03 / 巴基斯坦</span><h3>尚未使用的人</h3><p>208 位卡拉奇伊斯蘭銀行非使用者的意願，不能直接預測其他銀行客戶的實際使用量。</p></article>
+        <article class="limit"><span class="index">04 / 越南</span><h3>疫情便利樣本</h3><p>779 位既有使用者在疫情期間受訪；感染風險的效果可能隨情境改變。</p></article>
+      </div>
+      <div class="warning">解讀方式：事件研究、消費者調查與意願問卷的結果各有用途；規劃新市場產品時，應再用當地客群資料驗證。</div>
+    </section>
+
+    <section class="slide" aria-label="產品設計啟示">
+      <span class="slide-no">08 / 09</span>
+      <p class="eyebrow">依據研究形成的產品假設</p>
+      <div class="implication-layout">
+        <div>
+          <h2>把發現轉成<span class="mint">可驗證的設計</span>。</h2>
+          <div class="implication-list">
+            <div class="implication"><span class="bullet">01</span><p><strong>首頁先露出查餘額</strong>：觀察新用戶能否完成首次查詢；依據西班牙研究的資訊型服務順序。</p></div>
+            <div class="implication"><span class="bullet">02</span><p><strong>查詢後提示轉帳</strong>：追蹤從查詢到首次交易的轉換；依據西班牙研究的使用路徑。</p></div>
+            <div class="implication"><span class="bullet">03</span><p><strong>交易流程提供練習與求助</strong>：觀察完成率和求助率；依據巴基斯坦研究的技術自我效能。</p></div>
+            <div class="implication"><span class="bullet">04</span><p><strong>情境化說明安全措施</strong>：測試理解程度與信任；依據西班牙與越南研究中的安全感及信任因素。</p></div>
+          </div>
+          <span class="inference-label">設計假設｜上述介面做法尚未由四篇論文直接驗證</span>
+        </div>
+        <div class="implication-art" aria-hidden="true"><img src="../assets/08_checklist.png" alt=""></div>
+      </div>
+    </section>
+
+    <section class="slide" aria-label="文獻來源">
+      <span class="slide-no">09 / 09</span>
+      <p class="eyebrow">來源與延伸閱讀</p>
+      <h2>四篇原文與 Wiki 精讀。</h2>
+      <div class="source-grid">
+        <article class="reference">
+          <h3>實體服務摩擦與數位銀行採用</h3>
+          <p>新加坡 DBS，2015–2017 年交易資料；本地 PDF 為 2021 工作論文版，期刊線上發表於 2023 年。</p>
+          <div class="reference-links"><a href="https://doi.org/10.1287/mnsc.2023.4972" target="_blank" rel="noopener">期刊 DOI ↗</a><a class="local" href="../wiki/papers/ChoiLoh2023-PhysicalFrictionsDigitalBanking.md">Wiki 精讀 ↗</a></div>
+        </article>
+        <article class="reference">
+          <h3>銀行客戶數位化的機器學習分析</h3>
+          <p>西班牙，3,005 位消費者調查；隨機森林與因果森林分析線上銀行使用。</p>
+          <div class="reference-links"><a href="https://doi.org/10.1371/journal.pone.0240362" target="_blank" rel="noopener">期刊全文 ↗</a><a class="local" href="../wiki/papers/CarboValverde2020-DigitalizationBankCustomers.md">Wiki 精讀 ↗</a></div>
+        </article>
+        <article class="reference">
+          <h3>伊斯蘭銀行客戶採用數位銀行服務</h3>
+          <p>巴基斯坦卡拉奇，208 位伊斯蘭銀行非使用者；研究數位服務採用意願。</p>
+          <div class="reference-links"><a href="https://doi.org/10.21098/jimf.v9i1.1545" target="_blank" rel="noopener">期刊 DOI ↗</a><a class="local" href="../wiki/papers/Shaikh2023-IslamicDigitalBankingAdoption.md">Wiki 精讀 ↗</a></div>
+        </article>
+        <article class="reference">
+          <h3>越南數位銀行服務接受因素</h3>
+          <p>越南，疫情期間 779 位既有使用者；以結構方程模型分析服務接受度。</p>
+          <div class="reference-links"><a href="https://doi.org/10.15678/EBER.2024.120106" target="_blank" rel="noopener">期刊全文 ↗</a><a class="local" href="../wiki/papers/Nguyen2024-DigitalBankAcceptanceVietnam.md">Wiki 精讀 ↗</a></div>
+        </article>
+      </div>
+      <div class="takeaway">
+        <p>共同線索：<strong class="mint">可接觸的服務、可完成的操作、可理解的安全措施</strong>，需要依當地客群再測試。</p>
+        <img src="../assets/10_presentation.png" alt="簡報圖示">
+      </div>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="簡報控制">
+    <button id="prev" type="button" aria-label="上一頁" title="上一頁（←）">‹</button>
+    <span class="counter" id="counter" aria-live="polite">01 / 09</span>
+    <button id="next" type="button" aria-label="下一頁" title="下一頁（→）">›</button>
+    <button id="fullscreen" type="button" aria-label="切換全螢幕" title="切換全螢幕">⛶</button>
+  </nav>
+  <div class="keyboard-hint">← → 翻頁　·　Home / End 跳頁　·　F 全螢幕</div>
+
+  <script>
+    (() => {
+      const deck = document.getElementById('deck');
+      const slides = Array.from(deck.querySelectorAll('.slide'));
+      const counter = document.getElementById('counter');
+      const progress = document.getElementById('progress-fill');
+      let current = 0;
+
+      function show(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === current);
+          slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+        });
+        counter.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+        document.title = `${slides[current].getAttribute('aria-label')}｜數位銀行`;
+      }
+
+      document.getElementById('prev').addEventListener('click', () => show(current - 1));
+      document.getElementById('next').addEventListener('click', () => show(current + 1));
+      document.getElementById('fullscreen').addEventListener('click', async () => {
+        try {
+          if (!document.fullscreenElement) await deck.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (_) { /* 全螢幕可能受瀏覽器設定限制。 */ }
+      });
+
+      document.addEventListener('keydown', event => {
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) {
+          event.preventDefault(); show(current + 1);
+        } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+          event.preventDefault(); show(current - 1);
+        } else if (event.key === 'Home') {
+          show(0);
+        } else if (event.key === 'End') {
+          show(slides.length - 1);
+        } else if (event.key.toLowerCase() === 'f') {
+          document.getElementById('fullscreen').click();
+        }
+      });
+
+      let touchStartX = null;
+      deck.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].clientX; }, {passive:true});
+      deck.addEventListener('touchend', event => {
+        if (touchStartX === null) return;
+        const delta = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(delta) > 65) show(current + (delta < 0 ? 1 : -1));
+        touchStartX = null;
+      }, {passive:true});
+
+      const requestedSlide = Number.parseInt(location.hash.match(/^#slide-(\d+)$/)?.[1] || '1', 10);
+      show(requestedSlide - 1);
+    })();
+  </script>
+</body>
+</html>

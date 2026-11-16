@@ -1,0 +1,23 @@
+# 本機設定與憑證
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 編輯器與作業系統產生的檔案
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# 簡報檢查時產生的暫存截圖
+presentations/.qa-*.png
+
+# 原始 PDF 與圖像保留在本機；公開儲存庫只發布 Wiki、簡報與 assets
+/raw/
