@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#fffaf5">
+  <title>金融 AI｜研究關係圖</title><link rel="stylesheet" href="./graph-deck.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <main id="deck" class="deck"></main>
+  <nav class="controls" aria-label="投影片控制"><button id="prev" type="button" aria-label="上一頁" title="上一頁">‹</button><span id="counter" class="counter" aria-live="polite">01 / 09</span><button id="next" type="button" aria-label="下一頁" title="下一頁">›</button><button id="fullscreen" type="button" aria-label="切換全螢幕" title="切換全螢幕">⛶</button></nav>
+  <span class="kbd-hint">← → 翻頁 · Home / End 跳頁 · F 全螢幕</span>
+  <noscript>請啟用 JavaScript 以觀看簡報；研究筆記可由 wiki/index.md 開啟。</noscript>
+  <script>
+    window.DECK = {
+      topic:"金融 AI", theme:"ai", icon:"../assets/03_ai_chip.png",
+      sources:{
+        bloomberg:{short:"Wu 等",name:"BloombergGPT：金融領域大型語言模型",detail:"2023 預印本；50B 參數，約 363B 金融與 345B 一般詞元。",url:"https://arxiv.org/abs/2303.17564",wiki:"../wiki/papers/Wu2023-BloombergGPT.md"},
+        fingpt:{short:"Yang 等",name:"FinGPT：開放式金融大型語言模型",detail:"2023 首次公開；本地 PDF 為 2025-11-15 修訂版，重點為資料作業與輕量微調。",url:"https://arxiv.org/abs/2306.06031",wiki:"../wiki/papers/Yang2023-FinGPT.md"},
+        finqa:{short:"Chen 等",name:"FinQA：財報數值推理資料集",detail:"2021 預印本；8,281 個專家撰寫的問題，含支持資料與可執行推理步驟。",url:"https://arxiv.org/abs/2109.00122",wiki:"../wiki/papers/Chen2021-FinQA.md"},
+        finben:{short:"Xie 等",name:"FinBen：金融大型語言模型基準測試",detail:"2024 預印本修訂版；36 個資料集、24 項任務與 15 個代表性模型。",url:"https://arxiv.org/abs/2402.12659",wiki:"../wiki/papers/Xie2024-FinBen.md"},
+        finrobot:{short:"Yang 等",name:"FinRobot：金融 AI 代理平台",detail:"2024 預印本；提出任務代理、模型配置、資料流程與多模型架構。",url:"https://arxiv.org/abs/2405.14767",wiki:"../wiki/papers/Yang2024-FinRobot.md"}
+      },
+      graph:{
+        nodes:[
+          {id:"financial",label:["金融語料"],kind:"input",x:90,y:75},
+          {id:"general",label:["一般語料"],kind:"input",x:90,y:180},
+          {id:"open",label:["開放資料","與清理"],kind:"input",x:90,y:290},
+          {id:"finqa",label:["FinQA","數值推理"],kind:"context",x:90,y:400},
+          {id:"bloomberg",label:["BloombergGPT"],kind:"model",x:360,y:95},
+          {id:"fingpt",label:["FinGPT"],kind:"model",x:360,y:205},
+          {id:"finrobot",label:["FinRobot","代理平台"],kind:"model",x:360,y:315},
+          {id:"finben",label:["FinBen","基準測試"],kind:"context",x:360,y:425},
+          {id:"tasks",label:["金融任務"],kind:"outcome",x:630,y:195},
+          {id:"reliable",label:["實際可靠性","待驗證"],kind:"limit",x:630,y:375}
+        ],
+        edges:[
+          {from:"financial",to:"bloomberg",type:"structure",label:"訓練語料",ref:"bloomberg"},
+          {from:"general",to:"bloomberg",type:"structure",label:"混合訓練",ref:"bloomberg"},
+          {from:"open",to:"fingpt",type:"structure",label:"資料流程",ref:"fingpt"},
+          {from:"bloomberg",to:"tasks",type:"structure",label:"任務評估",ref:"bloomberg"},
+          {from:"fingpt",to:"tasks",type:"proposal",label:"應用方向",ref:"fingpt"},
+          {from:"finrobot",to:"tasks",type:"structure",label:"代理編排",ref:"finrobot"},
+          {from:"finqa",to:"finben",type:"structure",label:"資料集納入",ref:"finben"},
+          {from:"finben",to:"reliable",type:"boundary",label:"場景驗證",ref:"finben"},
+          {from:"tasks",to:"reliable",type:"boundary",label:"另需驗證",ref:"finrobot"}
+        ]
+      },
+      slides:[
+        {type:"cover",kicker:"金融科技 LLM Wiki · 教學簡報",title:"金融 AI 的能力，\n從哪裡來？",lead:"沿著資料、模型、任務、基準與應用流程，追蹤五篇研究能支持哪些主張。",chips:["資料組成","數值推理","基準測試","代理平台"],icon:"../assets/03_ai_chip.png",note:"簡報中的模型與基準結果對應各論文版本，不代表 2026 年所有模型的最新排名。"},
+        {type:"map",kicker:"全圖｜五篇研究的定位",title:"資料、模型、任務與驗證是不同節點。",lead:"金融 AI 是把模型用於財報問答、金融文本分析等任務；圖譜由左到右連接資料、模型、任務與驗證。",facts:[
+          {label:"資料與模型",text:"BloombergGPT 以金融／一般語料混合訓練；FinGPT 強調開放資料流程與微調。"},
+          {label:"可測量的任務",text:"FinQA 提供財報數值推理題；FinBen 把金融任務擴成多資料集評估。"},
+          {label:"系統與部署",text:"FinRobot 展示代理平台架構；實際工作品質仍需另外測試。"}
+        ],note:"圖中的「應用方向」與「場景驗證」是研究設計或分析者推論，不是已證明的通用效果。",refs:["bloomberg","fingpt","finqa","finben","finrobot"]},
+        {type:"focus",kicker:"路徑一｜模型如何取得金融知識",title:"專用訓練與開放式資料流程走不同路。",lead:"兩篇論文的模型規模、資料取得與實驗設定不同，適合比較設計選擇，不能直接排績效名次。",focus:["financial","general","open","bloomberg","fingpt","tasks"],facts:[
+          {label:"BloombergGPT",text:"50B 參數；把金融領域語料與一般語料混合，用金融與通用任務評估。完整訓練資源不完全公開。"},
+          {label:"FinGPT",text:"強調取得、清理、更新金融資料，以及以輕量微調降低客製化成本；論文展示應用方向。"},
+          {label:"比較口徑",text:"一篇報告特定模型的訓練與評估，另一篇提出開放框架與流程；不能用名稱比較勝負。"}
+        ],note:"FinGPT 本地 PDF 為 2025-11-15 修訂版；模型與資料規格以各自原文版本為準。",refs:["bloomberg","fingpt"]},
+        {type:"chart",kicker:"同一研究內的資料組成",title:"BloombergGPT 的訓練語料接近各半。",lead:"此圖只表示 Wu 等人在原文第 2 節報告的詞元數量，不表示模型準確率。",path:["金融／一般語料","BloombergGPT","金融任務"],chart:{title:"訓練語料詞元量",subtitle:"原文四捨五入數值；單位：十億詞元（B tokens）。金融 51.27%，一般 48.73%。",max:400,axis:["0B","400B"],groups:[
+          {label:"金融領域資料",rows:[{label:"金融語料",value:363,display:"363B"}]},
+          {label:"一般用途資料",rows:[{label:"一般語料",value:345,display:"345B"}]}
+        ]},facts:[
+          {label:"看得見的設計",text:"金融語料約 363B，一般語料約 345B；作者想同時保留領域與通用能力。"},
+          {label:"圖表限制",text:"詞元量只描述訓練資料配比；無法單獨證明某類任務表現較好。"}
+        ],note:"原文第 2.1、2.2 節；51.27% 與 48.73% 為作者標示的訓練占比。",refs:["bloomberg"]},
+        {type:"focus",kicker:"路徑二｜財報數值推理",title:"FinQA 讓答案有可檢查的計算路徑。",lead:"比起只看最終答案，FinQA 同時提供支持事實與可執行推理步驟。",focus:["finqa","finben","reliable"],facts:[
+          {label:"8,281 題",text:"由具金融知識的標註者撰寫，問題連到財報文字、表格數字與計算程序。"},
+          {label:"教學示例（自編）",text:"營收從 100 增至 120，先找到兩年數值，再算（120－100）÷100＝20%；可分開檢查擷取與計算。"},
+          {label:"能力邊界",text:"這是指定財報問答任務，不等於完整公司研究或投資判斷。"}
+        ],note:"FinBen 收錄 FinQA 作為其評估資料集之一；不應把 FinQA 全部 8,281 題誤寫成 FinBen 使用的題數。",refs:["finqa","finben"]},
+        {type:"focus",kicker:"路徑三｜跨任務評估",title:"FinBen 把「金融能力」拆成多項任務。",lead:"單一情緒分析分數不足以代表財報問答、風險管理、預測或生成能力。",focus:["finqa","finben","reliable"],facts:[
+          {label:"評估廣度",text:"原文整理 36 個資料集、24 項金融任務，評估 15 個代表性模型。"},
+          {label:"主要觀察",text:"模型在資訊擷取與文本分析較強；進階推理、生成與預測仍有不足。"},
+          {label:"解讀方式",text:"每個結果綁定論文版本、提示方式、資料集與評分方法；舊版名次不代表目前產品表現。"}
+        ],note:"本地 PDF 為 2024-06-19 修訂版。這些數量是評估範圍，不是模型能力分數。",refs:["finben"]},
+        {type:"focus",kicker:"路徑四｜代理平台",title:"FinRobot 串起流程，仍需驗證輸出品質。",lead:"作者把任務代理、模型策略、資料作業與多模型組成金融分析平台。",focus:["open","finrobot","tasks","reliable"],facts:[
+          {label:"架構重點",text:"把一項金融分析工作拆成資料取得、模型選擇、代理執行與成果呈現。"},
+          {label:"可重用性",text:"公開平台與程式碼提供研究起點，方便改造工作流程。"},
+          {label:"驗證缺口",text:"系統能串起工具，不表示每份報告的數據、推理與投資結論已正確。"}
+        ],note:"此頁介紹作者提出的系統架構；「應用可靠性待驗證」是本簡報的評估要求。",refs:["finrobot"]},
+        {type:"summary",kicker:"綜合｜能力聲明的三道關卡",title:"金融 AI 的強項，要對應到具體任務。",lead:"從語料投入、基準成績到真實金融工作，每一步都需要不同證據。",cards:[
+          {title:"看資料與版本",text:"訓練語料、更新方式、模型版本與開放程度決定可重現性。"},
+          {title:"看任務與指標",text:"財報數值推理、文本擷取與預測各有不同評分方法。"},
+          {title:"看場景與責任",text:"平台架構需接上資料查證、人工審核與實際工作品質檢查。"}
+        ],note:"這是跨文獻的分析框架，並非單一論文對所有金融 AI 系統的整體評級。",refs:["bloomberg","fingpt","finqa","finben","finrobot"]},
+        {type:"sources",kicker:"文獻與版本",title:"每個節點都能回到原文。",lead:"以下列出五篇研究與本地 Wiki 筆記；簡報數字均依原文所述版本呈現。",note:"各論文有不同版本與用途；跨論文模型排名需另設同條件評估。"}
+      ]
+    };
+  </script><script src="./graph-deck.js"></script>
+</body>
+</html>

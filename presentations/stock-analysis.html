@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffaf5">
+  <title>股票分析｜研究關係圖</title>
+  <link rel="stylesheet" href="./graph-deck.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <main id="deck" class="deck"></main>
+  <nav class="controls" aria-label="投影片控制">
+    <button id="prev" type="button" aria-label="上一頁" title="上一頁">‹</button>
+    <span id="counter" class="counter" aria-live="polite">01 / 08</span>
+    <button id="next" type="button" aria-label="下一頁" title="下一頁">›</button>
+    <button id="fullscreen" type="button" aria-label="切換全螢幕" title="切換全螢幕">⛶</button>
+  </nav>
+  <span class="kbd-hint">← → 翻頁 · Home / End 跳頁 · F 全螢幕</span>
+  <noscript>請啟用 JavaScript 以觀看簡報；研究筆記可由 wiki/index.md 開啟。</noscript>
+  <script>
+    window.DECK = {
+      topic: "股票分析", theme: "stock", icon: "../assets/07_stock_candlesticks.png",
+      sources: {
+        llt: {short:"Lopez-Lira、Tang", name:"大型語言模型能否預測股價變動？", detail:"2023 首次公開；本地 PDF 為 arXiv v6（2025-10-30）。新聞標題、GPT-4 評分與報酬。", url:"https://arxiv.org/abs/2304.07619", wiki:"../wiki/papers/LopezLiraTang2023-StockPriceForecast.md"},
+        xie: {short:"Xie 等", name:"大型語言模型預測股價的零樣本測試", detail:"2023 預印本；三個推文與歷史價格資料集，表 2 比較 ACC 與 MCC。", url:"https://arxiv.org/abs/2304.05351", wiki:"../wiki/papers/Xie2023-WallStreetNeophyte.md"},
+        chen: {short:"Chen 等", name:"大型語言模型如何解讀歷史股票報酬？", detail:"2024 預印本；研究近期報酬外推、預測偏差與區間校準。", url:"https://arxiv.org/abs/2409.11540", wiki:"../wiki/papers/Chen2024-HistoricalStockReturns.md"}
+      },
+      graph: {
+        nodes: [
+          {id:"news", label:["新聞標題"], kind:"input", x:90, y:85},
+          {id:"tweets", label:["推文與價格"], kind:"input", x:90, y:240},
+          {id:"history", label:["歷史報酬"], kind:"input", x:90, y:395},
+          {id:"signal", label:["GPT-4","新聞評分"], kind:"model", x:360, y:85},
+          {id:"forecast", label:["零樣本","方向預測"], kind:"model", x:360, y:240},
+          {id:"bias", label:["趨勢外推","與偏差"], kind:"model", x:360, y:395},
+          {id:"returns", label:["後續報酬","關聯"], kind:"outcome", x:630, y:85},
+          {id:"baseline", label:["同任務","基準比較"], kind:"outcome", x:630, y:240},
+          {id:"tradable", label:["交易可行性","待檢查"], kind:"limit", x:630, y:395}
+        ],
+        edges: [
+          {from:"news",to:"signal",type:"structure",label:"模型解讀",ref:"llt"},
+          {from:"signal",to:"returns",type:"association",label:"樣本外關聯",ref:"llt"},
+          {from:"tweets",to:"forecast",type:"structure",label:"零樣本輸入",ref:"xie"},
+          {from:"history",to:"forecast",type:"structure",label:"價格特徵",ref:"xie"},
+          {from:"forecast",to:"baseline",type:"comparison",label:"同表比較",ref:"xie"},
+          {from:"history",to:"bias",type:"association",label:"外插傾向",ref:"chen"},
+          {from:"returns",to:"tradable",type:"boundary",label:"交易檢查",ref:"llt"},
+          {from:"baseline",to:"tradable",type:"boundary",label:"非獲利率",ref:"xie"}
+        ]
+      },
+      slides: [
+        {type:"cover", kicker:"金融科技 LLM Wiki · 教學簡報", title:"LLM 能分析股票，\n但如何驗證預測？", lead:"沿著「輸入資料 → 模型訊號 → 評估 → 交易可行性」追蹤三篇研究，分清預測結果與投資成效。", chips:["新聞訊號","零樣本預測","行為偏差"], icon:"../assets/07_stock_candlesticks.png", note:"教育與研究用途；以下論文結果不是對任何股票的買賣建議。"},
+        {type:"map", kicker:"全圖｜三條研究路徑", title:"同樣談「預測」，研究問題並不相同。", lead:"圖中的三條橫向路徑分別檢驗新聞訊號、零樣本方向預測與歷史報酬外推。", facts:[
+          {label:"新聞路徑",text:"新聞標題由 GPT-4 評分，再與後續報酬對照。"},
+          {label:"多模態路徑",text:"推文與價格輸入，測試漲跌分類是否勝過基準。"},
+          {label:"偏差路徑",text:"歷史報酬進入模型，檢查外插及區間校準。"}
+        ], note:"總圖的箭頭分別代表資料流、統計相關、基準比較或待檢查的限制；不能視為同一種因果關係。", refs:["llt","xie","chen"]},
+        {type:"focus", kicker:"路徑一｜新聞與報酬", title:"新聞評分與後續報酬有關，初始反應另算。", lead:"Lopez-Lira、Tang 用 GPT-4 判讀公司新聞標題，區分市場當下反應與之後的報酬漂移。", focus:["news","signal","returns","tradable"], facts:[
+          {label:"測量對象",text:"模型對新聞給方向分數，再檢查樣本外日報酬。小型公司及負面新聞的訊號較明顯。"},
+          {label:"容易誤讀的數字",text:"摘要中的約九成日命中率屬不可交易的初始市場反應，不能當作可實現策略報酬。"},
+          {label:"外推前要問",text:"新聞發布時間、交易成本、樣本期間與模型版本是否與實際使用場景相同？"}
+        ], note:"本地 PDF 是 arXiv v6（2025-10-30）；如引用精確報酬或回測數字，需依該版本的表格與交易設定。", refs:["llt"]},
+        {type:"chart", kicker:"路徑二｜同一研究內的準確率", title:"零樣本 ChatGPT 的表現依資料集而變。", lead:"下圖只使用 Xie 等人在表 2 報告的同一指標：漲跌分類準確率 ACC。", path:["推文與價格","零樣本方向預測","基準比較"], chart:{title:"三個資料集的漲跌分類準確率",subtitle:"Xie 等，表 2；單位：%；SLOT 為該研究的比較方法，ChatGPT 為零樣本設定。",max:100,axis:["0%","100%"],groups:[
+          {label:"BIGDATA22",rows:[{label:"SLOT",value:54.81,display:"54.81%"},{label:"ChatGPT",value:53.13,display:"53.13%"}]},
+          {label:"ACL18",rows:[{label:"SLOT",value:58.72,display:"58.72%"},{label:"ChatGPT",value:50.38,display:"50.38%"}]},
+          {label:"CIKM18",rows:[{label:"SLOT",value:55.86,display:"55.86%"},{label:"ChatGPT",value:55.43,display:"55.43%"}]}
+        ]}, facts:[
+          {label:"同口徑比較",text:"每組兩個數值都來自相同資料集與 ACC 指標，避免跨論文排名。"},
+          {label:"讀圖重點",text:"CIKM18 的差距較小；ACL18 的差距較大。準確率不等於投資報酬率。"}
+        ], note:"圖軸從 0% 到 100%，並直接標示原文數值；表 2 還提供 MCC，可用來補充類別不平衡時的解讀。", refs:["xie"]},
+        {type:"focus", kicker:"路徑三｜歷史資料與偏差", title:"模型可能把近期漲勢外推到未來。", lead:"Chen 等研究模型如何解讀歷史股票報酬，焦點是預測行為與校準，不是交易策略。", focus:["history","bias","tradable"], facts:[
+          {label:"主要發現",text:"模型容易延續近期趨勢、預測相對樂觀；對極端結果的估計偏保守。"},
+          {label:"區間校準",text:"要求模型提供信賴區間時，部分校準表現優於研究中的調查比較基準。"},
+          {label:"使用限制",text:"提示方式、模型版本、股票排序與誤差指標會影響比較；預測偏差不能換算成獲利。"}
+        ], note:"此為 2024 年預印本；簡報呈現論文中的研究結果，不暗示目前所有模型有相同偏差。", refs:["chen"]},
+        {type:"matrix", kicker:"跨研究比較｜先對齊問題", title:"三篇研究的輸入、目標與驗證不同。", lead:"放在同一頁比較的是研究設計；只有同一資料集與同一指標的數字才進入同一張績效圖。", matrix:{columns:["研究","輸入與任務","可回答的問題","不可直接推論"],rows:[
+          ["Lopez-Lira、Tang","新聞標題 → GPT-4 評分 → 報酬","新聞訊號與樣本外報酬是否相關","摘要命中率 ≠ 可交易獲利"],
+          ["Xie 等","推文＋價格 → 漲跌分類","零樣本模型能否超過同任務基準","ACC ≠ 策略報酬"],
+          ["Chen 等","歷史報酬 → 模型預測與區間","模型是否外插、是否校準","預測偏差 ≠ 可直接交易的訊號"]
+        ]}, note:"跨論文的數值不直接排序：輸入、樣本期間、任務和評估指標均不同。", refs:["llt","xie","chen"]},
+        {type:"summary", kicker:"研究結論｜三道驗證門檻", title:"從模型輸出到投資用途，還有三道門。", lead:"把圖譜最後一個節點留給可檢查的條件，而非把研究結果當成買賣指示。", cards:[
+          {title:"先核對任務",text:"方向分類、報酬相關與區間校準是不同問題；選對相應指標。"},
+          {title:"再核對時間",text:"新聞時間、資料可得時點與樣本外期間，決定訊號是否真的可提前使用。"},
+          {title:"最後核對交易",text:"成本、流動性與風險調整後表現，才與投資實作有關。"}
+        ], note:"本頁為跨研究的評估框架與分析者推論，並非三篇論文共同測試的單一策略。", refs:["llt","xie","chen"]},
+        {type:"sources", kicker:"文獻與版本", title:"回到原文，核對圖上的每條線。", lead:"資料集、模型版本、頁面表格與評估口徑，決定結果可以推論到哪裡。", note:"預印本可能有後續版本；引用精確數字時，以本簡報所對應的原文版本為準。"}
+      ]
+    };
+  </script>
+  <script src="./graph-deck.js"></script>
+</body>
+</html>

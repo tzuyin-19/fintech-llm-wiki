@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#fffaf5">
+  <title>金融 AI 治理與金融穩定｜研究關係圖</title><link rel="stylesheet" href="./graph-deck.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <main id="deck" class="deck"></main>
+  <nav class="controls" aria-label="投影片控制"><button id="prev" type="button" aria-label="上一頁" title="上一頁">‹</button><span id="counter" class="counter" aria-live="polite">01 / 08</span><button id="next" type="button" aria-label="下一頁" title="下一頁">›</button><button id="fullscreen" type="button" aria-label="切換全螢幕" title="切換全螢幕">⛶</button></nav>
+  <span class="kbd-hint">← → 翻頁 · Home / End 跳頁 · F 全螢幕</span>
+  <noscript>請啟用 JavaScript 以觀看簡報；研究筆記可由 wiki/index.md 開啟。</noscript>
+  <script>
+    window.DECK = {
+      topic:"金融 AI 治理與金融穩定", theme:"governance", icon:"../assets/08_checklist.png",
+      sources:{
+        fsb24:{short:"FSB 2024",name:"人工智慧對金融穩定的影響",detail:"金融穩定委員會，2024-11-14；辨識第三方集中、市場相關性、網路及模型與資料風險。",url:"https://www.fsb.org/2024/11/the-financial-stability-implications-of-artificial-intelligence/",wiki:"../wiki/papers/FSB2024-FinancialStabilityAI.md"},
+        fsb25:{short:"FSB 2025",name:"監測金融業 AI 採用與相關脆弱性",detail:"金融穩定委員會，2025-10-10；整理監測做法、資料缺口及供應鏈依賴。",url:"https://www.fsb.org/2025/10/monitoring-adoption-of-artificial-intelligence-and-related-vulnerabilities-in-the-financial-sector/",wiki:"../wiki/papers/FSB2025-AIMonitoring.md"},
+        fsb26:{short:"FSB 2026",name:"金融機構負責任採用 AI 的實務建議",detail:"金融穩定委員會，2026-10-15；提出 12 項相稱的治理實務建議。",url:"https://www.fsb.org/2026/10/sound-practices-for-responsible-adoption-of-artificial-intelligence-ai-final-report/",wiki:"../wiki/papers/FSB2026-ResponsibleAIAdoption.md"}
+      },
+      graph:{
+        nodes:[
+          {id:"adoption",label:["金融業","採用 AI"],kind:"input",x:90,y:240},
+          {id:"supplier",label:["第三方","供應商集中"],kind:"context",x:360,y:70},
+          {id:"model",label:["模型與","資料風險"],kind:"context",x:360,y:180},
+          {id:"cyber",label:["網路與","詐騙風險"],kind:"context",x:360,y:300},
+          {id:"herding",label:["市場行為","相關性"],kind:"context",x:360,y:420},
+          {id:"monitor",label:["監測採用","與依賴"],kind:"model",x:630,y:95},
+          {id:"gap",label:["定義與","資料缺口"],kind:"limit",x:630,y:210},
+          {id:"oversight",label:["治理與","人類監督"],kind:"outcome",x:630,y:325},
+          {id:"controls",label:["第三方與","資安措施"],kind:"outcome",x:630,y:430}
+        ],
+        edges:[
+          {from:"adoption",to:"supplier",type:"proposal",label:"潛在脆弱性",ref:"fsb24"},
+          {from:"adoption",to:"model",type:"proposal",label:"潛在脆弱性",ref:"fsb24"},
+          {from:"adoption",to:"cyber",type:"proposal",label:"潛在脆弱性",ref:"fsb24"},
+          {from:"adoption",to:"herding",type:"proposal",label:"潛在脆弱性",ref:"fsb24"},
+          {from:"supplier",to:"monitor",type:"proposal",label:"監測依賴",ref:"fsb25"},
+          {from:"monitor",to:"gap",type:"boundary",label:"可比性缺口",ref:"fsb25"},
+          {from:"model",to:"oversight",type:"proposal",label:"治理建議",ref:"fsb26"},
+          {from:"supplier",to:"controls",type:"proposal",label:"第三方管理",ref:"fsb26"},
+          {from:"cyber",to:"controls",type:"proposal",label:"資安措施",ref:"fsb26"}
+        ]
+      },
+      slides:[
+        {type:"cover",kicker:"金融科技 LLM Wiki · 教學簡報",title:"金融 AI 治理：\n風險如何被看見？",lead:"循著「辨識脆弱性 → 監測採用 → 建立治理措施」理解三份金融穩定委員會報告。",chips:["風險辨識","監測缺口","負責任採用"],icon:"../assets/08_checklist.png",note:"FSB 報告是國際監理分析與實務建議，不直接等於任何國家的現行法律。"},
+        {type:"map",kicker:"先理解概念｜三份 FSB 報告",title:"單一 AI 問題，可能經共同依賴放大。",lead:"金融穩定關心的不只是一家機構出錯，也關心相同供應商、模型或交易行為會否讓風險擴散。",facts:[
+          {label:"脆弱性",text:"模型、資料、網路或第三方服務出問題時，金融服務可能受影響。"},
+          {label:"監測",text:"先知道哪些機構採用 AI、依賴誰、用於什麼用途，才能觀察可能的集中。"},
+          {label:"治理",text:"依用途與風險設定責任、驗證、人類監督和第三方管理。"}
+        ],note:"圖上的風險線是 FSB 的潛在脆弱性評估；不表示每條線已有量化因果證明。",refs:["fsb24","fsb25","fsb26"]},
+        {type:"focus",kicker:"第一段｜2024 年風險辨識",title:"AI 風險不只來自單一模型。",lead:"FSB 2024 將金融穩定風險放在供應鏈、市場、網路、模型與資料的連結中觀察。",focus:["adoption","supplier","model","cyber","herding"],facts:[
+          {label:"供應商集中",text:"多家金融機構依賴相同服務商時，單點故障或替代困難可能擴大影響。"},
+          {label:"共同市場行為",text:"相近模型或資料來源可能增加交易行為相關性；報告把它列為潛在脆弱性。"},
+          {label:"其他面向",text:"網路攻擊、詐騙、錯假資訊，以及資料品質與模型風險，也在報告討論範圍。"}
+        ],note:"這是國際監理機構的風險分類與分析，不是對單一風險發生機率的測量。",refs:["fsb24"]},
+        {type:"focus",kicker:"第二段｜2025 年如何監測",title:"要監測集中風險，先知道誰依賴誰。",lead:"FSB 2025 討論監理機關如何蒐集 AI 採用資訊，並以生成式 AI 供應鏈說明第三方依賴。",focus:["supplier","monitor","gap"],facts:[
+          {label:"監測問題",text:"金融機構使用哪些 AI 功能、依賴哪些模型與供應商、關鍵流程是否集中？"},
+          {label:"資料缺口",text:"各地對 AI 的定義和填報方式不同，跨國統計不一定可直接比較。"},
+          {label:"實際意義",text:"如果連使用範圍都沒有共同口徑，後續集中度或風險趨勢就難以判讀。"}
+        ],note:"報告重點是監測能力與指標設計，並未直接估計某項 AI 用途造成的因果風險。",refs:["fsb25"]},
+        {type:"focus",kicker:"第三段｜2026 年負責任採用",title:"治理措施要接到具體風險與用途。",lead:"FSB 2026 提出 12 項實務建議，強調依機構規模與使用案例風險採取相稱措施。",focus:["supplier","model","cyber","oversight","controls"],facts:[
+          {label:"責任與監督",text:"董事會與高階主管監督、明確治理責任，並設計人類監督。"},
+          {label:"模型與資料",text:"風險評估、資料治理、可解釋性與績效管理，是部署前後的重要工作。"},
+          {label:"外部依賴",text:"網路安全與第三方風險管理，對共用供應商尤其重要。"}
+        ],note:"12 項為 FSB 的實務建議，不應寫成所有國家都已生效的法定義務。",refs:["fsb26"]},
+        {type:"matrix",kicker:"跨報告綜合｜風險、監測、措施",title:"讓每項治理措施能回答一個風險問題。",lead:"下表是本簡報依三份 FSB 報告整理的教學對照，並非 FSB 原文中的單一表格。",matrix:{columns:["潛在風險｜2024","監測要問｜2025","可對應的措施｜2026"],rows:[
+          ["第三方集中","哪些關鍵用途依賴相同供應商？資料是否足以看見集中？","第三方評估、替代與持續監督"],
+          ["模型與資料品質","AI 用途、資料來源與模型範圍是否被記錄？","風險評估、資料治理、績效管理、人類監督"],
+          ["網路與詐騙風險","重大用途與外部依賴是否被辨識？","資安措施、治理責任與事件應對"],
+          ["市場相關性","是否有足夠資訊辨識共同模型或資料依賴？","依用途採取相稱治理；持續補足監測資料"]
+        ]},note:"此矩陣是分析者的跨報告對照，不代表每項監測訊號已在各國取得或每項措施已證實降低系統性風險。",refs:["fsb24","fsb25","fsb26"]},
+        {type:"summary",kicker:"教學總結｜讓流程閉合",title:"辨識、監測、治理是一個反覆循環。",lead:"新用途與新供應商出現時，風險清單和監測口徑都需要重新檢查。",cards:[
+          {title:"先辨識",text:"把 AI 用途、供應鏈與可能放大的脆弱性列出。"},
+          {title:"再監測",text:"確認能否取得可比較的採用與依賴資料；標示資料缺口。"},
+          {title:"再調整措施",text:"依風險程度配置治理、人類監督、資安與第三方管理，並定期回查。"}
+        ],note:"本頁將三份報告串成教學流程；具體義務仍需依各司法管轄區的現行規定另行查證。",refs:["fsb24","fsb25","fsb26"]},
+        {type:"sources",kicker:"三份 FSB 報告",title:"從原文看報告的時間與性質。",lead:"2024 辨識風險、2025 討論監測、2026 提出實務建議。",note:"報告日期與類型已逐篇列明；本簡報不宣稱其內容就是台灣或其他國家的現行法。"}
+      ]
+    };
+  </script><script src="./graph-deck.js"></script>
+</body>
+</html>
